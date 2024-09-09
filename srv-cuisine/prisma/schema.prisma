@@ -11,8 +11,9 @@ model deliveries {
   idCoursier    Int               
   idOrder       Int
   status        deliveries_status @default(REQUESTED)
-  pickup_time   DateTime          @db.DateTime(0)
-  delivery_time DateTime          @db.DateTime(0)
+  deliveryAddress String          @db.VarChar(255)
+  pickup_time   DateTime?         @db.DateTime(0)
+  delivery_time DateTime?         @db.DateTime(0)
   orders        orders            @relation(fields: [idOrder], references: [id], onUpdate: Restrict, map: "deliveries_order_fkey")
 
   @@id([idOrder, idCoursier])
