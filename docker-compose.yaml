@@ -1,0 +1,13 @@
+version: '1'
+services:
+  gateway:
+    build: ./gateway
+    ports:
+      - "8080:8080"
+    volumes:
+      # Monter le répertoire actuel dans le conteneur sous /app
+      - ./:/app
+      # Monter un volume pour le cache des dépendances Go
+      - go-mod-cache:/go/pkg/mod
+volumes:
+  go-mod-cache:

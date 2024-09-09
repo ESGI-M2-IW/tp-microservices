@@ -1,0 +1,41 @@
+# 1. Utiliser une image Go officielle pour la phase de construction
+FROM golang:1.19 AS builder
+
+# 2. Répertoire de travail
+WORKDIR /app
+
+# 3. Copier les fichiers du projet dans le conteneur
+COPY . .
+
+RUN go get github.com/joho/godotenv
+
+# 4. Télécharger les dépendances Go
+RUN go mod download
+
+RUN go mod tidy
+
+CMD [ "/bin/bash" ]
+
+# 5. Compiler l'application en statique
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o gateway .
+
+# 6. Utiliser une image légère pour l'exécution
+FROM alpine:latest
+
+# 7. Installer les certificats racine pour les connexions HTTPS
+RUN apk --no-cache add ca-certificates
+
+# 8. Répertoire de travail de l'application
+WORKDIR /root/
+
+# 9. Copier le binaire compilé de l'étape de construction
+COPY --from=builder /app/gateway .
+
+# 10. Donner des permissions d'exécution au binaire
+RUN chmod +x ./gateway
+
+# 11. Exposer le port 8080
+EXPOSE 8080
+
+# 11. Commande pour exécuter l'application
+CMD ["./gateway"]
