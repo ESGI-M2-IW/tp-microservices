@@ -1,14 +1,72 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model deliveries {
+  idCoursier    Int               
+  idOrder       Int
+  status        deliveries_status
+  pickup_time   DateTime          @db.DateTime(0)
+  delivery_time DateTime          @db.DateTime(0)
+  orders        orders            @relation(fields: [idOrder], references: [id], onUpdate: Restrict, map: "deliveries_order_fkey")
+
+  @@id([idOrder, idCoursier])
+  @@unique([idCoursier, idOrder], map: "id")
+}
+
+model orders {
+  id            Int             @id @default(autoincrement())
+  clientId      Int
+  createdAt     DateTime        @db.DateTime(0)
+  status        orders_status
+  deliveries    deliveries[]
+  orders_plates orders_plates[]
+}
+
+model orders_plates {
+  idPlate  Int
+  idOrder  Int
+  quantity Int                  @default(1)
+  status   orders_plates_status
+  orders   orders               @relation(fields: [idOrder], references: [id], onUpdate: Restrict, map: "idOrder")
+  plates   plates               @relation(fields: [idPlate], references: [id], onUpdate: Restrict, map: "idPlate")
+
+  @@id([idPlate, idOrder])
+  @@index([idOrder], map: "orders_plates_ibfk_1")
+}
+
+model plates {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(255)
+  price         Float
+  available     Boolean         @default(true)
+  orders_plates orders_plates[]
+}
+
+enum deliveries_status {
+  REQUESTED
+  ON_THE_WAY
+  COMPLETED
+}
+
+enum orders_status {
+  NEW
+  CONFIRMED
+  IN_PREPARATION
+  TO_DELIVER
+  DELIVERED
+  CANCELLED
+}
+
+enum orders_plates_status {
+  TO_PREPARE
+  IN_PREPARATION
+  READY_TO_SERVE
+  SERVED
+  CANCELLED
 }
