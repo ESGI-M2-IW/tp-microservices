@@ -12,9 +12,9 @@ model deliveries {
   idOrder       Int
   status        deliveries_status @default(REQUESTED)
   deliveryAddress String          @db.VarChar(255)
-  pickup_time   DateTime?         @db.DateTime(0)
-  delivery_time DateTime?         @db.DateTime(0)
-  orders        orders            @relation(fields: [idOrder], references: [id], onUpdate: Restrict, map: "deliveries_order_fkey")
+  pickup_time   DateTime?         @db.DateTime()
+  delivery_time DateTime?         @db.DateTime()
+  orders        orders            @relation(fields: [idOrder], references: [id], onUpdate: Restrict, onDelete: Cascade, map: "deliveries_order_fkey")
 
   @@id([idOrder, idCoursier])
   @@unique([idCoursier, idOrder], map: "id")
@@ -23,10 +23,12 @@ model deliveries {
 model orders {
   id            Int             @id @default(autoincrement())
   clientId      Int
-  createdAt     DateTime        @db.DateTime(0)
+  createdAt     DateTime        @db.DateTime()
   status        orders_status   @default(NEW)
   deliveries    deliveries[]
   orders_plates orders_plates[]
+
+  @@index([clientId])
 }
 
 model orders_plates {
@@ -34,8 +36,8 @@ model orders_plates {
   idOrder  Int
   quantity Int                  @default(1)
   status   orders_plates_status @default(TO_PREPARE)
-  orders   orders               @relation(fields: [idOrder], references: [id], onUpdate: Restrict, map: "idOrder")
-  plates   plates               @relation(fields: [idPlate], references: [id], onUpdate: Restrict, map: "idPlate")
+  orders   orders               @relation(fields: [idOrder], references: [id], onUpdate: Restrict, onDelete: Cascade, map: "idOrder")
+  plates   plates               @relation(fields: [idPlate], references: [id], onUpdate: Restrict, onDelete: Cascade, map: "idPlate")
 
   @@id([idPlate, idOrder])
   @@index([idOrder], map: "orders_plates_ibfk_1")
@@ -46,7 +48,7 @@ model plates {
   name          String          @db.VarChar(255)
   price         Float
   available     Boolean         @default(true)
-  orders_plates orders_plates[]
+  orders orders_plates[]
 }
 
 enum deliveries_status {
