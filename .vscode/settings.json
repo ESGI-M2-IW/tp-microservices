@@ -1,0 +1,9 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#173327",
+    "titleBar.activeBackground": "#214737",
+    "titleBar.activeForeground": "#F8FCFA"
+  },
+  "python.defaultInterpreterPath": "venv/bin/python",
+  "cSpell.words": ["dotenv"]
+}
