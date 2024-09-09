@@ -38,9 +38,9 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-SERVICE_APPS = []
+SERVICE_APPS = ['base']
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = ['rest_framework', 'rest_framework_api_key']
 
 INSTALLED_APPS = DJANGO_APPS + SERVICE_APPS + THIRD_PARTY_APPS
 
@@ -73,6 +73,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_api_key.permissions.HasAPIKey',
+    ],
+}
+
+AUTH_USER_MODEL = 'base.CustomUser'
 
 
 # Database
