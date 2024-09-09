@@ -10,7 +10,7 @@ datasource db {
 model deliveries {
   idCoursier    Int               
   idOrder       Int
-  status        deliveries_status
+  status        deliveries_status @default(REQUESTED)
   pickup_time   DateTime          @db.DateTime(0)
   delivery_time DateTime          @db.DateTime(0)
   orders        orders            @relation(fields: [idOrder], references: [id], onUpdate: Restrict, map: "deliveries_order_fkey")
@@ -23,7 +23,7 @@ model orders {
   id            Int             @id @default(autoincrement())
   clientId      Int
   createdAt     DateTime        @db.DateTime(0)
-  status        orders_status
+  status        orders_status   @default(NEW)
   deliveries    deliveries[]
   orders_plates orders_plates[]
 }
@@ -32,7 +32,7 @@ model orders_plates {
   idPlate  Int
   idOrder  Int
   quantity Int                  @default(1)
-  status   orders_plates_status
+  status   orders_plates_status @default(TO_PREPARE)
   orders   orders               @relation(fields: [idOrder], references: [id], onUpdate: Restrict, map: "idOrder")
   plates   plates               @relation(fields: [idPlate], references: [id], onUpdate: Restrict, map: "idPlate")
 
