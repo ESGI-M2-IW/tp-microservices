@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# U-BER-GER
+Micro-service "Cuisine"
+=======================
 
-## Getting Started
-
-First, run the development server:
+## Installation et démarrage
 
 ```bash
+npm install
+
+# Lancement en mode développement
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Lancement en mode déploiement
+npm run build
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Se rendre sur http://localhost:3100/api
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Connexion à la base de donnée
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# modifier la variable DATABASE_URL dans le fichier .env
+DATABASE_URL=DATABASE_URL="mysql://user:mdp@host:port/bdd-name"
 
-## Learn More
+# Modifier dans le fichier /prisma/schema.prisma le type de bdd
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
 
-To learn more about Next.js, take a look at the following resources:
+# Création des tables dans la base de donnée
+prisma db push
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Utilisation de l'API
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Rendez-vous sur la page http://localhost:3100/api/doc
 
-## Deploy on Vercel
+## Objets gérés par le microservice
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Menu *plates*
+  - GET /api/plates
+  - POST /api/plates
+  - GET /api/plates/:id
+  - PATCH /api/plates/:id
+  - DELETE /api/plates/:id
+- Plats commandés *orders_plates*
+  - GET /api/orders/:idOrder
+  - GET /api/orders/:idOrder/plates
+  - GET /api/orders/:idOrder/plates/:idPlates
+  - PATCH /api/orders/:idOrder/plates/:idPlates
+  - DELETE /api/orders/:idOrder/plates/:idPlates
+- Status des plats commandés *order-plate-statuses*
+  - GET /api/order-plate-statuses
