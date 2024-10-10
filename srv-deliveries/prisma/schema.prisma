@@ -8,7 +8,7 @@ datasource db {
 }
 
 model deliveries {
-  idCoursier      Int
+  idCourier       Int
   idOrder         Int
   status          deliveries_status @default(REQUESTED)
   pickup_time     DateTime?         @db.DateTime(0)
@@ -16,8 +16,8 @@ model deliveries {
   deliveryAddress String            @db.VarChar(255)
   order           orders            @relation(fields: [idOrder], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "deliveries_order_fkey")
 
-  @@id([idOrder, idCoursier])
-  @@unique([idCoursier, idOrder], map: "id")
+  @@id([idOrder, idCourier])
+  @@unique([idCourier, idOrder], map: "id")
 }
 
 model orders {
