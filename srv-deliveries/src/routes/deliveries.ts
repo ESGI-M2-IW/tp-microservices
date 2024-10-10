@@ -56,7 +56,7 @@ api.post('/', async (c) => {
       data: {
         idCourier,
         idOrder,
-        status: deliveries_status.REQUESTED,
+        status: status ?? deliveries_status.REQUESTED,
         pickup_time: null,
         delivery_time: null,
         deliveryAddress
@@ -71,19 +71,39 @@ api.post('/', async (c) => {
 api.put('/order/:orderId/courier/:courierId', async (c) => {
   const orderId = Number(c.req.param('orderId'));
   const courierId = Number(c.req.param('courierId'));
+
   if (isNaN(orderId) || isNaN(courierId)) {
     return c.json({ message: 'Invalid Order ID or Courier ID' }, 400);
   }
 
   const { status, pickup_time, delivery_time, deliveryAddress } = await c.req.json();
 
+  const dataToUpdate: any = {
+    ...(status && { status }),
+    ...(pickup_time && { pickup_time: new Date(pickup_time) }),
+    ...(delivery_time && { delivery_time: new Date(delivery_time) }),
+    ...(deliveryAddress && { deliveryAddress })
+  };
+
+  if (Object.keys(dataToUpdate).length === 0) {
+    return c.json({ message: 'No fields to update' }, 400);
+  }
+
   try {
     const updatedDelivery = await prisma.deliveries.update({
-      where: { idOrder_idCourier: { idOrder: orderId, idCourier: courierId } },
-      data: { status, pickup_time: pickup_time ? new Date(pickup_time) : null, delivery_time: delivery_time ? new Date(delivery_time) : null, deliveryAddress }
+      where: {
+        idOrder_idCourier: {
+          idOrder: orderId,
+          idCourier: courierId
+        }
+      },
+      data: dataToUpdate
     });
     return c.json(updatedDelivery);
   } catch (error) {
+    if (error.code === 'P2025') {
+      return c.json({ message: 'Delivery not found' }, 404);
+    }
     return handleError(error, c);
   }
 });
@@ -91,12 +111,14 @@ api.put('/order/:orderId/courier/:courierId', async (c) => {
 api.patch('/order/:orderId/courier/:courierId', async (c) => {
   const orderId = Number(c.req.param('orderId'));
   const courierId = Number(c.req.param('courierId'));
+
   if (isNaN(orderId) || isNaN(courierId)) {
     return c.json({ message: 'Invalid Order ID or Courier ID' }, 400);
   }
 
   const { status, pickup_time, delivery_time, deliveryAddress } = await c.req.json();
-  const dataToUpdate = {
+
+  const dataToUpdate: any = {
     ...(status && isValidStatus(status) && { status }),
     ...(pickup_time && { pickup_time: new Date(pickup_time) }),
     ...(delivery_time && { delivery_time: new Date(delivery_time) }),
@@ -109,11 +131,19 @@ api.patch('/order/:orderId/courier/:courierId', async (c) => {
 
   try {
     const updatedDelivery = await prisma.deliveries.update({
-      where: { idOrder_idCourier: { idOrder: orderId, idCourier: courierId } },
+      where: {
+        idOrder_idCourier: {
+          idOrder: orderId,
+          idCourier: courierId
+        }
+      },
       data: dataToUpdate
     });
     return c.json(updatedDelivery);
   } catch (error) {
+    if (error.code === 'P2025') {
+      return c.json({ message: 'Delivery not found' }, 404);
+    }
     return handleError(error, c);
   }
 });
@@ -121,16 +151,25 @@ api.patch('/order/:orderId/courier/:courierId', async (c) => {
 api.delete('/order/:orderId/courier/:courierId', async (c) => {
   const orderId = Number(c.req.param('orderId'));
   const courierId = Number(c.req.param('courierId'));
+
   if (isNaN(orderId) || isNaN(courierId)) {
     return c.json({ message: 'Invalid Order ID or Courier ID' }, 400);
   }
 
   try {
     await prisma.deliveries.delete({
-      where: { idOrder_idCourier: { idOrder: orderId, idCourier: courierId } }
+      where: {
+        idOrder_idCourier: {
+          idOrder: orderId,
+          idCourier: courierId
+        }
+      }
     });
     return c.json({ message: 'Delivery deleted successfully' }, 204);
   } catch (error) {
+    if (error.code === 'P2025') {
+      return c.json({ message: 'Delivery not found' }, 404);
+    }
     return handleError(error, c);
   }
 });
