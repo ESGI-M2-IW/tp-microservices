@@ -1,4 +1,4 @@
-{% load static %}
+{% load static tailwind_tags %}
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="author" content="M2 IWEB ESGI LYON 2024 - 2025" />
+  
+    {% tailwind_css %}
 
     <!-- Title & favicon -->
     <title>{% block title %}{% endblock %}</title>
@@ -31,7 +33,9 @@
   </head>
   <body>
     <!-- Notification -->
-    {% for message in messages %} {% include 'base/components/message.html' with tags=message.tags message=message %} {% endfor %}
+    {% for message in messages %}
+        {% include 'base/components/message.html' with tags=message.tags message=message %}
+    {% endfor %}
     <section id="messages-section"></section>
 
     {% block content %}{% endblock %}
@@ -40,5 +44,9 @@
 
     <!-- Custom JS -->
     {% block custom_javascript %}{% endblock %}
+  
+    {% if debug %}
+        <script src="http://127.0.0.1:8000/static/django_browser_reload/reload.js"></script>
+    {% endif %}
   </body>
 </html>

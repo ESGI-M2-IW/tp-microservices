@@ -38,9 +38,9 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-SERVICE_APPS = ['base']
+SERVICE_APPS = ['base', 'theme']
 
-THIRD_PARTY_APPS = ['rest_framework', 'rest_framework_api_key']
+THIRD_PARTY_APPS = ['rest_framework', 'rest_framework_api_key', 'tailwind', 'django_browser_reload']
 
 INSTALLED_APPS = DJANGO_APPS + SERVICE_APPS + THIRD_PARTY_APPS
 
@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -144,3 +145,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = "login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "login/"
+
+# Tailwind
+TAILWIND_APP_NAME = 'theme'
