@@ -2,23 +2,22 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from .models import CustomUser
-from .serializers import CustomUserSerializer
-from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 
 from base.forms import LoginForm
+from .serializers import CustomUserSerializer
 
 
 @api_view(["GET"])
 @permission_classes([HasAPIKey])
 def users_list(request):
     users = CustomUser.objects.all()
-    return Response({"users": users})
+    serializer = CustomUserSerializer(users, many=True)
+    return Response({"users": serializer.data})
 
 
 def login_user(request):
