@@ -67,7 +67,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """
         Custom validation to ensure address is provided if the role is 'customer'.
         """
-        if self.role == 'customer' and None in [self.street_number, self.street, self.postal_code, self.city]:
+        if self.role == 'customer' and None in [self.street_number, self.street, self.postal_code, self.city] and not self.is_superuser:
             raise ValidationError(_('Address cannot be null if the role is customer.'))
 
     def save(self, *args, **kwargs):
@@ -76,3 +76,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """
         self.clean()
         super().save(*args, **kwargs)
+
+    def get_address(self):
+        return f"{self.street_number} {self.street} {self.postal_code} {self.city}"
