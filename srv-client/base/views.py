@@ -41,4 +41,33 @@ def logout_user(request):
 
 @login_required
 def home(request):
-    return render(request, 'base/home.html')
+    if request.user.role == 'customer':
+        return redirect('customer_home')
+    if request.user.role == 'courier':
+        return redirect('courier_home')
+    if request.user.role == 'cook':
+        return redirect('cook_home')
+
+@login_required
+def customer_home(request):
+    user = request.user
+    if user.role != 'customer':
+        return redirect('home')
+
+    return render(request, 'base/base_customer.html')
+
+@login_required
+def courier_home(request):
+    user = request.user
+    if user.role != 'courier':
+        return redirect('home')
+
+    return render(request, 'base/base_courier.html')
+
+@login_required
+def cook_home(request):
+    user = request.user
+    if user.role != 'cook':
+        return redirect('home')
+
+    return render(request, 'base/base_cook.html')
