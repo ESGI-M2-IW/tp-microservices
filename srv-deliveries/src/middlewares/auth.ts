@@ -1,4 +1,6 @@
 import { createMiddleware } from 'hono/factory'
+import dotenv from 'dotenv';
+dotenv.config();
 
 const guard = createMiddleware(async (c, next) => {
     const apiKey = c.req.header('x-api-key')
