@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -74,6 +75,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """
         Override the save method to call the clean method for validation.
         """
+        # Hash the password if it's not already hashed
+        if self.password and not self.password.startswith("pbkdf2_"):
+            self.password = make_password(self.password)
+
         self.clean()
         super().save(*args, **kwargs)
 
