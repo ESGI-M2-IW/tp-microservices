@@ -2,7 +2,44 @@
 
 This API provides endpoints to manage delivery operations using Hono framework and Prisma ORM. The base path for all routes is `/deliveries`.
 
+## Installation and Setup
+
+1. Navigate to the deliveries directory:
+```bash
+cd srv-deliveries
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Configure environment variables:
+```bash
+# Copy the example environment file
+cp .env.example .env
+
+# Edit .env file with your credentials
+# Set your API_KEY and DATABASE_URL
+```
+
+Example `.env` file:
+```env
+DATABASE_URL="mysql://user:password@mysql_url:port/databaseName?ssl-mode=REQUIRED"
+API_KEY="your_api_key"
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+The API will be available at: http://localhost:3000/deliveries
+
 ## Table of Contents
+- [Installation and Setup](#installation-and-setup)
+- [Setup](#setup)
+- [Error Handling](#error-handling)
 - [Endpoints](#endpoints)
   - [Get All Deliveries](#get-all-deliveries)
   - [Get Delivery by Order ID](#get-delivery-by-order-id)
@@ -10,6 +47,20 @@ This API provides endpoints to manage delivery operations using Hono framework a
   - [Update Delivery (PUT)](#update-delivery-put)
   - [Update Delivery (PATCH)](#update-delivery-patch)
   - [Delete Delivery](#delete-delivery)
+
+## Setup
+```typescript
+import { Hono } from 'hono';
+import { PrismaClient } from '@prisma/client';
+```
+
+## Error Handling
+The API includes a centralized error handling mechanism that logs errors and returns a standardized error response:
+```json
+{
+  "message": "An error occurred"
+}
+```
 
 ## Endpoints
 
