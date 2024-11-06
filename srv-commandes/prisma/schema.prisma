@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model deliveries {
+  idOrder         Int
+  status          deliveries_status @default(REQUESTED)
+  pickup_time     DateTime?         @db.DateTime(0)
+  delivery_time   DateTime?         @db.DateTime(0)
+  deliveryAddress String            @db.VarChar(255)
+  idCourier       Int
+  orders          orders            @relation(fields: [idOrder], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "deliveries_order_fkey")
+
+  @@id([idOrder, idCourier])
+  @@unique([idCourier, idOrder], map: "id")
+}
+
+model orders {
+  id            Int             @id @default(autoincrement())
+  clientId      Int
+  createdAt     DateTime        @db.DateTime(0)
+  status        orders_status   @default(NEW)
+  deliveries    deliveries[]
+  orders_plates orders_plates[]
+
+  @@index([clientId])
+}
+
+model orders_plates {
+  idPlate  Int
+  idOrder  Int
+  quantity Int                  @default(1)
+  status   orders_plates_status @default(TO_PREPARE)
+  orders   orders               @relation(fields: [idOrder], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "orders_plates_ibfk_1")
+  plates   plates               @relation(fields: [idPlate], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "orders_plates_ibfk_2")
+
+  @@id([idPlate, idOrder])
+  @@index([idOrder], map: "orders_plates_ibfk_1")
+}
+
+model plates {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(255)
+  price         Float
+  available     Boolean         @default(true)
+  orders_plates orders_plates[]
+}
+
+enum deliveries_status {
+  REQUESTED
+  ON_THE_WAY
+  COMPLETED
+}
+
+enum orders_plates_status {
+  TO_PREPARE
+  IN_PREPARATION
+  READY_TO_SERVE
+  SERVED
+  CANCELLED
+}
+
+enum orders_status {
+  NEW
+  CONFIRMED
+  IN_PREPARATION
+  TO_DELIVER
+  DELIVERED
+  CANCELLED
+}
