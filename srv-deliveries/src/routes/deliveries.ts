@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { PrismaClient, deliveries_status } from '@prisma/client';
+import { guard } from '../middlewares/auth'
 
 const prisma = new PrismaClient();
 const api = new Hono().basePath('/deliveries');
@@ -13,7 +14,7 @@ const isValidStatus = (status: string) => {
   return Object.values(deliveries_status).includes(status);
 };
 
-api.get('/', async (c) => {
+api.get('/', guard, async (c) => {
   try {
     const allDeliveries = await prisma.deliveries.findMany();
     return allDeliveries.length
@@ -24,7 +25,7 @@ api.get('/', async (c) => {
   }
 });
 
-api.get('/:orderId', async (c) => {
+api.get('/:orderId', guard, async (c) => {
   const orderId = Number(c.req.param('orderId'));
   if (isNaN(orderId)) {
     return c.json({ message: 'Invalid Order ID' }, 400);
@@ -40,7 +41,7 @@ api.get('/:orderId', async (c) => {
   }
 });
 
-api.post('/', async (c) => {
+api.post('/', guard, async (c) => {
   const { idCourier, idOrder, status, deliveryAddress } = await c.req.json();
 
   if (!idCourier || !idOrder || !deliveryAddress || !status) {
@@ -68,7 +69,7 @@ api.post('/', async (c) => {
   }
 });
 
-api.put('/order/:orderId/courier/:courierId', async (c) => {
+api.put('/order/:orderId/courier/:courierId', guard, async (c) => {
   const orderId = Number(c.req.param('orderId'));
   const courierId = Number(c.req.param('courierId'));
 
@@ -108,7 +109,7 @@ api.put('/order/:orderId/courier/:courierId', async (c) => {
   }
 });
 
-api.patch('/order/:orderId/courier/:courierId', async (c) => {
+api.patch('/order/:orderId/courier/:courierId', guard, async (c) => {
   const orderId = Number(c.req.param('orderId'));
   const courierId = Number(c.req.param('courierId'));
 
@@ -148,7 +149,7 @@ api.patch('/order/:orderId/courier/:courierId', async (c) => {
   }
 });
 
-api.delete('/order/:orderId/courier/:courierId', async (c) => {
+api.delete('/order/:orderId/courier/:courierId', guard, async (c) => {
   const orderId = Number(c.req.param('orderId'));
   const courierId = Number(c.req.param('courierId'));
 
