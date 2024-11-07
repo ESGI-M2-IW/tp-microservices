@@ -30,7 +30,7 @@ COPY --from=builder /app/src ./src
 COPY --from=builder /app/package*.json ./
 
 # Exposer le port de l'application
-EXPOSE 3000
+EXPOSE 3200
 
 # Démarrer l'application
-CMD ["npm", "start"]
+CMD ["node", "src/index.js"]

@@ -1,6 +1,5 @@
 import { Hono } from 'hono';
 import { PrismaClient, deliveries_status } from '@prisma/client';
-import { guard } from '../middlewares/auth'
 
 const prisma = new PrismaClient();
 const api = new Hono().basePath('/deliveries');
@@ -14,7 +13,7 @@ const isValidStatus = (status: deliveries_status) => {
   return Object.values(deliveries_status).includes(status);
 };
 
-api.get('/', guard, async (c) => {
+api.get('/', async (c) => {
   try {
     const allDeliveries = await prisma.deliveries.findMany();
     return allDeliveries.length
@@ -25,7 +24,7 @@ api.get('/', guard, async (c) => {
   }
 });
 
-api.get('/:orderId', guard, async (c) => {
+api.get('/:orderId', async (c) => {
   const orderId = Number(c.req.param('orderId'));
   if (isNaN(orderId)) {
     return c.json({ message: 'Invalid Order ID' }, 400);
@@ -41,7 +40,7 @@ api.get('/:orderId', guard, async (c) => {
   }
 });
 
-api.post('/', guard, async (c) => {
+api.post('/', async (c) => {
   const { idCourier, idOrder, status, deliveryAddress } = await c.req.json();
 
   if (!idCourier || !idOrder || !deliveryAddress || !status) {
@@ -69,7 +68,7 @@ api.post('/', guard, async (c) => {
   }
 });
 
-api.put('/order/:orderId/courier/:courierId', guard, async (c) => {
+api.put('/order/:orderId/courier/:courierId', async (c) => {
   const orderId = Number(c.req.param('orderId'));
   const courierId = Number(c.req.param('courierId'));
 
@@ -109,7 +108,7 @@ api.put('/order/:orderId/courier/:courierId', guard, async (c) => {
   }
 });
 
-api.patch('/order/:orderId/courier/:courierId', guard, async (c) => {
+api.patch('/order/:orderId/courier/:courierId', async (c) => {
   const orderId = Number(c.req.param('orderId'));
   const courierId = Number(c.req.param('courierId'));
 
@@ -149,7 +148,7 @@ api.patch('/order/:orderId/courier/:courierId', guard, async (c) => {
   }
 });
 
-api.delete('/order/:orderId/courier/:courierId', guard, async (c) => {
+api.delete('/order/:orderId/courier/:courierId', async (c) => {
   const orderId = Number(c.req.param('orderId'));
   const courierId = Number(c.req.param('courierId'));
 

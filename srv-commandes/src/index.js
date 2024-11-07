@@ -1,4 +1,5 @@
 require('dotenv').config("../.env");
+const guard = require('./middlewares/auth.js');
 console.log("DATABASE_URL:", process.env.DATABASE_URL != undefined ? "Connexion à la BDD réussie !" : "Echec de connexion à la BDD"); // Devrait afficher l'URL de la base de données si elle est chargée.
 
 const express = require('express');
@@ -9,6 +10,7 @@ const commandeRoutes = require('./routes/commandes.js');
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
+app.use(guard);
 
 // Route de bienvenue à la racine
 app.get('/', (req, res) => {

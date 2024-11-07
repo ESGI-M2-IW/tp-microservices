@@ -22,7 +22,6 @@ router.get('/status', (req, res) => {
 // Route pour créer une nouvelle commande
 router.post('/', async (req, res) => {
     const { clientId, plates, dateLivraisonEstimee } = req.body;  // Changer 'plats' en 'plates'
-    console.log("Données reçues : ", req.body);
 
     try {
         // Vérifier que la liste de 'plates' n'est pas vide
@@ -129,10 +128,8 @@ router.get('/:id', async (req, res) => {
 
 // Route pour récupérer la liste des commandes
 router.get('/', async (req, res) => {
-    console.log("Tentative de récupération des commandes");
     try {
         const commandes = await prisma.orders.findMany();
-        console.log("Commandes récupérées : ", commandes);
         res.json(commandes);
     } catch (error) {
         console.error("Erreur lors de la récupération des commandes: ", error);

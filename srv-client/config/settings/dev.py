@@ -6,8 +6,8 @@ DEBUG = True
 ENVIRONMENT_NAME = 'DEV'
 ENVIRONMENT_COLOR = '#38cb65'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-CORS_ALLOWED_ORIGINS = ['http://localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'gateway', 'clients']
+CORS_ALLOWED_ORIGINS = ['http://localhost', 'http://clients', 'http://gateway']
 INTERNAL_IPS = ["127.0.0.1"]
 
 STATIC_URL = '/static/'
