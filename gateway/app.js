@@ -70,7 +70,7 @@ app.use('/orders', async (req, res) => {
             method: req.method,
             url: url,
             data: req.body,
-            headers: "x-api-key : secret"
+            headers: `x-api-key : ${process.env.API_KEY_ORDERS}`
         });
         res.json(response.data);
     } catch (error) {
