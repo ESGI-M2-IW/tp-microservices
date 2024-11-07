@@ -5,8 +5,16 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3300:3300"  # Le port externe est mappé au port de la gateway
-    env_file:
-      - ./gateway/.env
+    environment:
+      HOST_CUISINE: http://cuisine:3100
+      API_KEY_CUISINE: ${API_KEY_CUISINE}
+      HOST_DELIVERIES: http://deliveries:3000
+      API_KEY_DELIVERIES: ${API_KEY_DELIVERIES}
+      HOST_USERS: http://clients:8000
+      API_KEY_USERS: ${API_KEY_USERS}
+      HOST_ORDERS: http://orders:3200
+      API_KEY_ORDERS: ${API_KEY_ORDERS}
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
       - cuisine
       - deliveries
@@ -17,28 +25,25 @@ services:
     build:
       context: ./srv-cuisine
       dockerfile: Dockerfile
-    ports:
-      - "3100:3100"  # Port externe mappé au port interne de cuisine
-    env_file:
-      - ./srv-cuisine/.env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      API_KEY: ${API_KEY_CUISINE}
 
   deliveries:
     build:
       context: ./srv-deliveries
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"  # Port externe mappé au port interne de deliveries
-    env_file:
-      - ./srv-deliveries/.env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      API_KEY: ${API_KEY_DELIVERIES}
 
   orders:
     build:
       context: ./srv-commandes
       dockerfile: Dockerfile
-    ports:
-      - "3200:3200"  # Port externe mappé au port interne de commandes
-    env_file:
-      - ./srv-commandes/.env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      API_KEY: ${API_KEY_ORDERS}
   
   clients:
     build:
@@ -46,5 +51,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"  # Port externe mappé au port interne de clients
-    env_file:
-      - ./srv-client/.env
+    environment:
+      SECRET_KEY: ${API_KEY_USERS}
+      GATEWAY_URL: "http://gateway:3300"

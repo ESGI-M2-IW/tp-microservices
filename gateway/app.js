@@ -16,7 +16,11 @@ app.use((req, res, next) => {
 
 app.use('/users', async (req, res) => {
     try {
+        console.log(process.env.API_KEY_USERS);
+
         const url = `${process.env.HOST_USERS}/api/users${req.path === "/" ? "" : req.path}`;
+        console.log(url);
+
         const response = await axios({
             method: req.method,
             url: url,
