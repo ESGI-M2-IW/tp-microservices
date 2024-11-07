@@ -1,0 +1,15 @@
+meta {
+  name: plates
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{cuisine_base_url}}/plates
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  x-api-key: {{cuisine_api_key}}
+}
