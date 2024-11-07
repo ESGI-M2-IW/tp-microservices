@@ -35,7 +35,8 @@ app.use('/cuisine', async (req, res) => {
         const response = await axios({
             method: req.method,
             url: url,
-            data: req.body
+            data: req.body,
+            headers: `x-api-key : ${process.env.API_KEY_CUISINE}`
         });
         res.json(response.data);
     } catch (error) {
