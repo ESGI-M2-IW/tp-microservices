@@ -4,4 +4,10 @@
 
 {% block page %}
     <h1>Mes commandes en cours</h1>
+    
+    <ul>
+    {% for order in orders %}
+        <li>- {{ order }}</li>
+    {% endfor %}
+    </ul>
 {% endblock %}

@@ -122,6 +122,15 @@ def cook_home(request):
     if user.role != 'cook':
         return redirect('home')
 
+    try:
+        orders_call = requests.get(f"{settings.API_BASE_URL}/orders")
+        orders_call.raise_for_status()
+        response = orders_call.json()
+        orders = [order for order in response if order['status'] not in ['DELIVERED', 'CANCELLED']]
+        return render(request, 'base/my_orders.html', {'orders': orders})
+    except requests.exceptions.RequestException:
+        messages.error(request, "Impossible de récupérer la liste des commandes")
+
     return render(request, 'base/my_orders.html')
 
 @login_required
@@ -129,5 +138,13 @@ def cook_list(request):
     user = request.user
     if user.role != 'cook':
         return redirect('home')
+
+    try:
+        orders_call = requests.get(f"{settings.API_BASE_URL}/orders")
+        orders_call.raise_for_status()
+        orders = orders_call.json()
+        return render(request, 'base/orders_list.html', {'orders': orders})
+    except requests.exceptions.RequestException:
+        messages.error(request, "Impossible de récupérer la liste des commandes")
 
     return render(request, 'base/orders_list.html')
