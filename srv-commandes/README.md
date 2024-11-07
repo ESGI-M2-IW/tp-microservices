@@ -48,4 +48,5 @@ Exemple de body :
 # GET /api/orders/:id -> récupération une commande spécifique en utilisant son id.
 # GET /api/orders -> récupération de toutes les commandes présentes dans la base de données.
 # DELETE /api/orders/:id -> suppression d'une commande
-# PATCH /api/orders/:id/canceled -> annulation d'une commande (changement du statut)
+# PATCH /api/orders/:id/ -> changement du statut d'une commande 
+# GET /api/orders/status/ -> affichage de la liste des status disponible pour les commandes
