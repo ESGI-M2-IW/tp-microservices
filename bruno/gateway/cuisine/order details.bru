@@ -1,0 +1,15 @@
+meta {
+  name: order details
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{gateway_base_url}}/cuisine/orders/{{id}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  id: 1
+}

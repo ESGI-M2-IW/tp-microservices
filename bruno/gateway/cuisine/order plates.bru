@@ -1,0 +1,15 @@
+meta {
+  name: order plates
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{gateway_base_url}}/cuisine/orders/{{id}}/plates
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  id: 1
+}
