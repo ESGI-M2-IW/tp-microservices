@@ -4,6 +4,21 @@ const { PrismaClient } = require('@prisma/client');
 const router = express.Router();
 const prisma = new PrismaClient();
 
+const orders_status = {
+    NEW: 'NEW',
+    CONFIRMED: 'CONFIRMED',
+    IN_PREPARATION: 'IN_PREPARATION',
+    TO_DELIVER: 'TO_DELIVER',
+    DELIVERED: 'DELIVERED',
+    CANCELLED: 'CANCELLED',
+};
+
+// Route pour exposer l'énum des statuts de commande
+router.get('/status', (req, res) => {
+    console.log("Route /status appelée");
+    res.json(orders_status);  // Retourne tous les statuts possibles
+});
+
 // Route pour créer une nouvelle commande
 router.post('/', async (req, res) => {
     const { clientId, plates, dateLivraisonEstimee } = req.body;  // Changer 'plats' en 'plates'
@@ -34,6 +49,38 @@ router.post('/', async (req, res) => {
     } catch (error) {
         console.error(error);  // Affiche l'erreur dans la console
         res.status(500).json({ error: "Erreur lors de la création de la commande" });  // Retourne l'erreur
+    }
+});
+
+// Route pour mettre à jour le statut de la commande
+router.patch('/:id/status', async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body; // Récupère le nouveau statut
+
+    // Vérifie si le statut est valide en comparant avec l'énum des statuts possibles
+    if (!Object.values(orders_status).includes(status)) {
+        return res.status(400).json({ error: "Statut invalide" });
+    }
+
+    try {
+        const commande = await prisma.orders.findUnique({
+            where: { id: parseInt(id) },
+        });
+
+        if (!commande) {
+            return res.status(404).json({ error: "Commande non trouvée" });
+        }
+
+        // Met à jour le statut de la commande avec le nouveau statut
+        const commandeMiseAJour = await prisma.orders.update({
+            where: { id: parseInt(id) },
+            data: { status }, // Mise à jour du statut
+        });
+
+        res.json({ message: "Statut de la commande mis à jour", commande: commandeMiseAJour });
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour du statut de la commande : ", error);
+        res.status(500).json({ error: "Erreur lors de la mise à jour du statut de la commande" });
     }
 });
 
@@ -114,37 +161,5 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ error: "Erreur lors de la suppression de la commande" });
     }
 });
-
-// Route pour annuler une commande
-router.patch('/:id/cancel', async (req, res) => {
-    const { id } = req.params;
-    try {
-        // Recherche la commande
-        const commande = await prisma.orders.findUnique({
-            where: { id: parseInt(id) },
-        });
-
-        // Vérifie si la commande existe
-        if (!commande) {
-            return res.status(404).json({ error: "Commande non trouvée" });
-        }
-
-        // Met à jour le statut de la commande en "CANCELLED"
-        const commandeAnnulee = await prisma.orders.update({
-            where: { id: parseInt(id) },
-            data: {
-                status: 'CANCELLED', // On marque la commande comme annulée
-            },
-        });
-
-        res.json({ message: "Commande annulée", commande: commandeAnnulee });
-    } catch (error) {
-        console.error("Erreur lors de l'annulation de la commande : ", error);
-        res.status(500).json({ error: "Erreur lors de l'annulation de la commande" });
-    }
-});
-
-
-
 
 module.exports = router;
