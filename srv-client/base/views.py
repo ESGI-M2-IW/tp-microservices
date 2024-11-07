@@ -73,6 +73,14 @@ def customer_plates(request):
     if user.role != 'customer':
         return redirect('home')
 
+    try:
+        orders_call = requests.get(f"{settings.API_BASE_URL}/orders/user/{user.id}")
+        orders_call.raise_for_status()
+        orders = orders_call.json()
+        return render(request, 'base/customer_orders.html', {'orders': orders})
+    except requests.exceptions.RequestException:
+        messages.error(request, "Impossible de récupérer la liste de mes commandes")
+
     return render(request, 'base/customer_orders.html')
 
 @login_required
