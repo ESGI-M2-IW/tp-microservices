@@ -10,6 +10,7 @@ services:
     depends_on:
       - cuisine
       - deliveries
+      - clients
 
   cuisine:
     build:
@@ -28,3 +29,12 @@ services:
       - "3000:3000"  # Port externe mappé au port interne de deliveries
     env_file:
       - ./srv-deliveries/.env
+  
+  clients:
+    build:
+      context: ./srv-client
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"  # Port externe mappé au port interne de clients
+    env_file:
+      - ./srv-client/.env

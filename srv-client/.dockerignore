@@ -1,0 +1,35 @@
+# Ignore les fichiers de l'environnement virtuel local
+venv/
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# Ignore les fichiers temporaires et de cache
+*.log
+# *.sqlite3
+*.db
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Ignore les fichiers de configuration personnels
+secrets/
+
+# Ignore les fichiers et dossiers de développement spécifiques
+.idea/
+.vscode/
+*.iml
+
+# Ignore les fichiers et dossiers de build
+build/
+dist/
+*.egg-info
+
+# Ignore les fichiers statiques générés par Django
+static/
+media/
+
+# Ignore node_modules si le projet utilise du frontend dans un sous-répertoire
+node_modules/
