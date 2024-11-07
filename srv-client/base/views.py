@@ -106,4 +106,12 @@ def cook_home(request):
     if user.role != 'cook':
         return redirect('home')
 
-    return render(request, 'base/base_cook.html')
+    return render(request, 'base/my_orders.html')
+
+@login_required
+def cook_list(request):
+    user = request.user
+    if user.role != 'cook':
+        return redirect('home')
+
+    return render(request, 'base/orders_list.html')

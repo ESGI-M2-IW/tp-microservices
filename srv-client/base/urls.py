@@ -16,4 +16,5 @@ urlpatterns = [
     path('courier/', views.courier_home, name='courier_home'),
     path('couriers/', views.courier_list, name='courier_list'),
     path('cook/', views.cook_home, name='cook_home'),
+    path('cooks/', views.cook_list, name='cook_list'),
 ]
