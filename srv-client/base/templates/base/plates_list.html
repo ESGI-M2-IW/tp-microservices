@@ -4,4 +4,7 @@
 
 {% block page %}
     <h1>Liste des plats</h1>
+    {% if plates %}
+        <p>{{ plates }}</p>
+    {% endif %}
 {% endblock %}
