@@ -82,15 +82,15 @@ def courier_home(request):
         return redirect('home')
 
     try:
-        deliveries_call = requests.get(f"{settings.API_BASE_URL}/cuisine/plates")
+        deliveries_call = requests.get(f"{settings.API_BASE_URL}/deliveries")
         deliveries_call.raise_for_status()
-        deliveries = deliveries_call.json()
+        response = deliveries_call.json()
+        deliveries = [delivery for delivery in response if delivery['idCourier'] == user.id]
         return render(request, 'base/my_deliveries.html', {'deliveries': deliveries})
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         messages.error(request, "Impossible de récupérer la liste des plats")
-        print(e)
 
-    return render(request, 'base/my_deliveries.html')
+    return render(request, 'base/my_deliveries.html', {'deliveries': []})
 
 @login_required
 def courier_list(request):
@@ -98,7 +98,15 @@ def courier_list(request):
     if user.role != 'courier':
         return redirect('home')
 
-    return render(request, 'base/deliveries_list.html')
+    try:
+        deliveries_call = requests.get(f"{settings.API_BASE_URL}/deliveries")
+        deliveries_call.raise_for_status()
+        deliveries = deliveries_call.json()
+        return render(request, 'base/deliveries_list.html', {'deliveries': deliveries})
+    except requests.exceptions.RequestException:
+        messages.error(request, "Impossible de récupérer la liste des plats")
+
+    return render(request, 'base/deliveries_list.html', {'deliveries': []})
 
 @login_required
 def cook_home(request):
