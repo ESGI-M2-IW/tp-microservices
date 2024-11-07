@@ -10,7 +10,7 @@ const handleError = (error: unknown, c: any) => {
   return c.json({ message: 'An error occurred' }, 500);
 };
 
-const isValidStatus = (status: string) => {
+const isValidStatus = (status: deliveries_status) => {
   return Object.values(deliveries_status).includes(status);
 };
 
