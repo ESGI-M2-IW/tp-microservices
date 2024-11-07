@@ -142,9 +142,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Login
-LOGIN_URL = "login/"
+LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "login/"
 
 # Tailwind
 TAILWIND_APP_NAME = 'theme'
+
+API_BASE_URL = os.getenv('GATEWAY_URL')

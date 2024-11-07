@@ -5,3 +5,4 @@ djangorestframework-api-key~=3.0.0
 python-dotenv~=1.0.1
 django-tailwind~=3.8.0
 django-browser-reload~=1.16.0
+requests~=2.32.3

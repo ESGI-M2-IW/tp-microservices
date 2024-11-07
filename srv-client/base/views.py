@@ -1,3 +1,5 @@
+import requests
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -53,6 +55,15 @@ def customer_home(request):
     user = request.user
     if user.role != 'customer':
         return redirect('home')
+
+    try:
+        plates_call = requests.get(f"{settings.API_BASE_URL}/cuisine/plates")
+        plates_call.raise_for_status()
+        plates = plates_call.json()
+        return render(request, 'base/plates_list.html', {'plates': plates})
+    except requests.exceptions.RequestException as e:
+        messages.error(request, "Impossible de récupérer la liste des plats")
+        print(e)
 
     return render(request, 'base/plates_list.html')
 
