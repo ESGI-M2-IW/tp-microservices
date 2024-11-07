@@ -54,7 +54,15 @@ def customer_home(request):
     if user.role != 'customer':
         return redirect('home')
 
-    return render(request, 'base/base_customer.html')
+    return render(request, 'base/plates_list.html')
+
+@login_required
+def customer_plates(request):
+    user = request.user
+    if user.role != 'customer':
+        return redirect('home')
+
+    return render(request, 'base/customer_orders.html')
 
 @login_required
 def courier_home(request):

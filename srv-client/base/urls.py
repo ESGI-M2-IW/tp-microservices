@@ -12,6 +12,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     path('customer/', views.customer_home, name='customer_home'),
+    path('customer/orders', views.customer_plates, name='customer_orders'),
     path('courier/', views.courier_home, name='courier_home'),
     path('cook/', views.cook_home, name='cook_home'),
 ]
