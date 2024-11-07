@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
 });
 
 // Route pour mettre à jour le statut de la commande
-router.patch('/:id/status', async (req, res) => {
+router.patch('/:id', async (req, res) => {
     const { id } = req.params;
     const { status } = req.body; // Récupère le nouveau statut
 
