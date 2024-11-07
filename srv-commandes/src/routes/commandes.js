@@ -70,8 +70,8 @@ router.get('/', async (req, res) => {
         console.log("Commandes récupérées : ", commandes);
         res.json(commandes);
     } catch (error) {
-        console.error("Erreurrrrrrrrrrrrr lors de la récupération des commandes: ", error); // Log l'erreur
-        res.status(500).json({ error: "Erreueeeeeeeeeeeeeeeee lors de la récupération des commandes" });
+        console.error("Erreur lors de la récupération des commandes: ", error);
+        res.status(500).json({ error: "Erreur lors de la récupération des commandes" });
     }
 });
 
