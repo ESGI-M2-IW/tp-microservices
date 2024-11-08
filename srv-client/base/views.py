@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import requests
 from django.conf import settings
 from django.contrib import messages
@@ -61,11 +63,10 @@ def customer_home(request):
         plates_call.raise_for_status()
         plates = plates_call.json()
         return render(request, 'base/plates_list.html', {'plates': plates})
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         messages.error(request, "Impossible de récupérer la liste des plats")
-        print(e)
 
-    return render(request, 'base/plates_list.html')
+    return render(request, 'base/plates_list.html', {'plates': []})
 
 @login_required
 def customer_plates(request):
@@ -76,12 +77,41 @@ def customer_plates(request):
     try:
         orders_call = requests.get(f"{settings.API_BASE_URL}/orders/user/{user.id}")
         orders_call.raise_for_status()
-        orders = orders_call.json()
+        orders = []
+        for order in orders_call.json():
+            order['createdAt'] = datetime.fromisoformat(order['createdAt'].replace("Z", "+00:00")).strftime("%Y-%m-%d %H:%M:%S")
+            total_plates = 0
+            for plate in order['orders_plates']:
+                total_plates += plate['quantity']
+            order['totalPlates'] = total_plates
+            orders.append(order)
         return render(request, 'base/customer_orders.html', {'orders': orders})
     except requests.exceptions.RequestException:
         messages.error(request, "Impossible de récupérer la liste de mes commandes")
 
-    return render(request, 'base/customer_orders.html')
+    return render(request, 'base/customer_orders.html', {'orders': []})
+
+@login_required
+def plate_details(request, id):
+    user = request.user
+    if user.role != 'customer':
+        return redirect('home')
+
+    try:
+        order_call = requests.get(f"{settings.API_BASE_URL}/orders/{id}")
+        order_call.raise_for_status()
+        order = order_call.json()
+        order['createdAt'] = datetime.fromisoformat(order['createdAt'].replace("Z", "+00:00")).strftime("%Y-%m-%d %H:%M:%S")
+        for delivery in order['deliveries']:
+            delivery['pickup_time'] = datetime.fromisoformat(delivery['pickup_time'].replace("Z", "+00:00")).strftime(
+                "%Y-%m-%d %H:%M:%S")
+            delivery['delivery_time'] = datetime.fromisoformat(delivery['delivery_time'].replace("Z", "+00:00")).strftime(
+                "%Y-%m-%d %H:%M:%S")
+        return render(request, 'base/plate_details.html', {'order': order})
+    except requests.exceptions.RequestException:
+        messages.error(request, "Impossible de récupérer le détail de la commande")
+
+    return render(request, 'base/plate_details.html')
 
 @login_required
 def courier_home(request):

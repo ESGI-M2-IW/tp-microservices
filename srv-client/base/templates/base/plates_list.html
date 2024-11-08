@@ -4,7 +4,38 @@
 
 {% block page %}
     <h1>Liste des plats</h1>
-    {% if plates %}
-        <p>{{ plates }}</p>
-    {% endif %}
+    <div class="flex gap-2 flex-wrap justify-center">
+        {% for plate in plates %}
+            <div class="mx-auto my-10">
+                <div class="bg-white shadow-lg rounded-lg p-6 space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <div class="text-gray-600 text-sm">
+                                {% if plate.available %}
+                                    disponible
+                                {% else %}
+                                    non disponible
+                                {% endif %}
+                            </div>
+                            <div class="text-gray-900 text-2xl font-semibold">
+                                {{ plate.name }}
+                                <span class="text-green-500 text-sm font-medium flex items-center">
+                                    {{ plate.price }} €
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                {% if plate.available %}
+                    <button class="w-full text-purple-600 bg-purple-100 hover:bg-purple-200 text-sm py-2 px-4 rounded-md transition duration-300 ease-in-out">
+                        Commander
+                    </button>
+                {% else %}
+                    <button disabled class="w-full text-gray-600 bg-gray-100 text-sm py-2 px-4 rounded-md">
+                        Commander
+                    </button>
+                {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
