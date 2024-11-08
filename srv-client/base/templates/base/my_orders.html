@@ -3,11 +3,30 @@
 {% block title %}Mes commandes en cours{% endblock %}
 
 {% block page %}
-    <h1>Mes commandes en cours</h1>
-    
-    <ul>
-    {% for order in orders %}
-        <li>- {{ order }}</li>
-    {% endfor %}
-    </ul>
+    <h1>Mes commandes</h1>
+
+    <div class="flex gap-2 flex-wrap justify-center">
+        {% for order in orders %}
+            <div class="mx-auto my-10">
+                <div class="bg-white shadow-lg rounded-lg p-6 space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <div class="text-gray-600 text-sm">
+                                {{ order.status }}
+                            </div>
+                            <div class="text-gray-900 text-2xl font-semibold">
+                                {{ order.createdAt }}
+                                <span class="text-green-500 text-sm font-medium flex items-center">
+                                    Utilisateur {{ order.clientId }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{% url 'cook_plate_details' order.id %}" class="w-full text-purple-600 bg-purple-100 hover:bg-purple-200 text-sm py-2 px-4 rounded-md transition duration-300 ease-in-out">
+                        Détail
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
