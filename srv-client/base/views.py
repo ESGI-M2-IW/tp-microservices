@@ -103,15 +103,49 @@ def plate_details(request, id):
         order = order_call.json()
         order['createdAt'] = datetime.fromisoformat(order['createdAt'].replace("Z", "+00:00")).strftime("%Y-%m-%d %H:%M:%S")
         for delivery in order['deliveries']:
-            delivery['pickup_time'] = datetime.fromisoformat(delivery['pickup_time'].replace("Z", "+00:00")).strftime(
+            if delivery['pickup_time']:
+                delivery['pickup_time'] = datetime.fromisoformat(delivery['pickup_time'].replace("Z", "+00:00")).strftime(
                 "%Y-%m-%d %H:%M:%S")
-            delivery['delivery_time'] = datetime.fromisoformat(delivery['delivery_time'].replace("Z", "+00:00")).strftime(
+            else:
+                delivery['pickup_time'] = "Non effectué"
+            if delivery['delivery_time']:
+                delivery['delivery_time'] = datetime.fromisoformat(delivery['delivery_time'].replace("Z", "+00:00")).strftime(
                 "%Y-%m-%d %H:%M:%S")
+            else:
+                delivery['delivery_time'] = "Non effectué"
         return render(request, 'base/plate_details.html', {'order': order})
     except requests.exceptions.RequestException:
         messages.error(request, "Impossible de récupérer le détail de la commande")
 
     return render(request, 'base/plate_details.html')
+
+@login_required
+def courier_plate_details(request, id):
+    user = request.user
+    if user.role != 'courier':
+        return redirect('home')
+
+    try:
+        order_call = requests.get(f"{settings.API_BASE_URL}/orders/{id}")
+        order_call.raise_for_status()
+        order = order_call.json()
+        order['createdAt'] = datetime.fromisoformat(order['createdAt'].replace("Z", "+00:00")).strftime("%Y-%m-%d %H:%M:%S")
+        for delivery in order['deliveries']:
+            if delivery['pickup_time']:
+                delivery['pickup_time'] = datetime.fromisoformat(delivery['pickup_time'].replace("Z", "+00:00")).strftime(
+                "%Y-%m-%d %H:%M:%S")
+            else:
+                delivery['pickup_time'] = "Non effectué"
+            if delivery['delivery_time']:
+                delivery['delivery_time'] = datetime.fromisoformat(delivery['delivery_time'].replace("Z", "+00:00")).strftime(
+                "%Y-%m-%d %H:%M:%S")
+            else:
+                delivery['delivery_time'] = "Non effectué"
+        return render(request, 'base/courier_plate_details.html', {'order': order})
+    except requests.exceptions.RequestException:
+        messages.error(request, "Impossible de récupérer le détail de la commande")
+
+    return render(request, 'base/courier_plate_details.html')
 
 @login_required
 def courier_home(request):

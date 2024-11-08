@@ -15,6 +15,7 @@ urlpatterns = [
     path('customer/orders', views.customer_plates, name='customer_orders'),
     path('customer/orders/<int:id>', views.plate_details, name='plate_details'),
     path('courier/', views.courier_home, name='courier_home'),
+    path('courier/orders/<int:id>', views.courier_plate_details, name='courier_plate_details'),
     path('couriers/', views.courier_list, name='courier_list'),
     path('cook/', views.cook_home, name='cook_home'),
     path('cooks/', views.cook_list, name='cook_list'),
