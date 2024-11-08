@@ -1,0 +1,54 @@
+{% extends 'base/base_customer.html' %}
+
+{% block title %}Détail d'une commande{% endblock %}
+
+{% block page %}
+    <h1>Détail d'une commande</h1>
+    <p>Date de création : {{ order.createdAt }}</p>
+    <p>Statut : {{ order.status }}</p>
+    <p>Plats :</p>
+    <div class="flex gap-2 flex-wrap justify-center">
+        {% for plate in order.orders_plates %}
+            <div class="mx-auto my-10">
+                <div class="bg-white shadow-lg rounded-lg p-6 space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <div class="text-gray-600 text-sm">
+                                {{ plate.status }}
+                            </div>
+                            <div class="text-gray-900 text-2xl font-semibold">
+                                Identifiant du plat : {{ plate.idPlate }}
+                                <span class="text-green-500 text-sm font-medium flex items-center">
+                                    {{ plate.quantity }} exemplaires
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <p>Livraison :</p>
+    <div class="flex gap-2 flex-wrap justify-center">
+        {% for delivery in order.deliveries %}
+            <div class="mx-auto my-10">
+                <div class="bg-white shadow-lg rounded-lg p-6 space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <div class="text-gray-600 text-sm">
+                                {{ delivery.status }}
+                            </div>
+                            <div class="text-gray-900 text-2xl font-semibold">
+                                Date de récupération par le livreur : {{ delivery.pickup_time }}<br>
+                                Date de dépot du plat : {{ delivery.delivery_time }}
+                                <span class="text-green-500 text-sm font-medium flex items-center">
+                                    adresse : {{ delivery.deliveryAddress }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
